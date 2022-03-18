@@ -22,20 +22,24 @@ from collections import Counter
 
 # response = requests.request("POST", find_URI, headers=headers, data=payload)
 
-channel_list = pd.read_excel('E:/Users/abega/Documents/Data Projects/scrapper/Output/links.xlsx')
+channel_list = pd.read_excel('links.xlsx')
 channels_list = []
 data = {}
 for name in channel_list['Names'].values:
-    file_path = f'E:/Users/abega/Documents/Data Projects/Z_Processer/{name}.csv'
+    file_path = f'{name}.csv'
     if exists(file_path):
       channels_list.append(name)
       df = pd.read_csv(file_path)
       data[name] = df
 print(list(data))
 
-def channel_data(data, option):
-  data[option]
-  return data[option]
+def channel_data(data, option, period):
+  if period == "Last Week":
+    df = data[option].sort_values("view_delta", ascending=False)
+  elif period == "All Time":
+    df = data[option].sort_values("Views_03/12", ascending=False)
+
+  return df
 
 st.header("Music Chart")
 container_00 = st.container()
@@ -46,4 +50,4 @@ channels = c1.selectbox("Channels", channels_list)
 period = c2.selectbox("Period", ["Last Week","All Time"])
 
 
-chart = container_00.dataframe(channel_data(data, channels), width=1500)
+chart = container_00.table(channel_data(data, channels, period))
