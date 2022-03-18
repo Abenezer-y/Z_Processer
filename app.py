@@ -22,7 +22,7 @@ from collections import Counter
 
 # response = requests.request("POST", find_URI, headers=headers, data=payload)
 
-channel_list = pd.read_excel('links.xlsx')
+channel_list = pd.read_csv('link.csv')
 channels_list = []
 data = {}
 for name in channel_list['Names'].values:
