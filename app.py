@@ -23,23 +23,32 @@ from collections import Counter
 # response = requests.request("POST", find_URI, headers=headers, data=payload)
 
 channel_list = pd.read_csv('link.csv')
-channels_list = []
+channels_list = ['All Sources']
 data = {}
+frame = []
 for name in channel_list['Names'].values:
     file_path = f'{name}.csv'
     if exists(file_path):
       channels_list.append(name)
       df = pd.read_csv(file_path)
       data[name] = df
-print(list(data))
+      frame.append(df)
+result = pd.concat(frame)
+
+data['All Sources'] = result
 
 def channel_data(data, option, period):
   if period == "Last Week":
     df = data[option].sort_values("view_delta", ascending=False)
+    df = df.drop_duplicates()
   elif period == "All Time":
     df = data[option].sort_values("Views_03/12", ascending=False)
-
-  return df
+    df = df.drop_duplicates()
+    
+  if df.shape[0]>100:
+    return df[['Posts', 'Channel', 'Views_03/03', 'Views_03/12', 'view_delta']].head(100)
+  else:
+    return df[['Posts', 'Channel','Views_03/03', 'Views_03/12', 'view_delta']]
 
 st.header("Music Chart")
 container_00 = st.container()
